@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kids Learning World</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:linear-gradient(135deg,#87CEEB,#FFD700);
+    text-align:center;
+}
+
+header{
+    background:#ff6b6b;
+    color:white;
+    padding:20px;
+    font-size:32px;
+    font-weight:bold;
+}
+
+.card{
+    background:white;
+    margin:20px auto;
+    max-width:800px;
+    padding:20px;
+    border-radius:20px;
+    box-shadow:0 5px 15px rgba(0,0,0,.2);
+}
+
+.learning-box{
+    font-size:80px;
+    font-weight:bold;
+    color:#ff5722;
+    margin:20px;
+    cursor:pointer;
+}
+
+button{
+    background:#4CAF50;
+    border:none;
+    color:white;
+    padding:12px 20px;
+    margin:5px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+}
+
+button:hover{
+    background:#2e7d32;
+}
+
+.color-box{
+    width:100px;
+    height:100px;
+    margin:10px auto;
+    border-radius:15px;
+    border:3px solid #ddd;
+}
+
+.result{
+    font-size:24px;
+    margin:10px;
+    font-weight:bold;
+}
+
+.footer{
+    background:#333;
+    color:white;
+    padding:15px;
+    margin-top:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+🌟 Kids Learning World 🌟
+</header>
+
+<!-- Alphabets -->
+<div class="card">
+<h2>🔤 Learn Alphabets</h2>
+
+<div id="alphabet"
+     class="learning-box"
+     onclick="speakCurrentLetter()">
+A
+</div>
+
+<div id="alphabetWord" style="font-size:28px;">
+Apple 🍎
+</div>
+
+<button onclick="prevLetter()">⬅ Previous</button>
+<button onclick="nextLetter()">Next ➡</button>
+</div>
+
+<!-- Numbers -->
+<div class="card">
+<h2>🔢 Learn Numbers</h2>
+
+<div id="number" class="learning-box">
+1
+</div>
+
+<button onclick="prevNumber()">⬅ Previous</button>
+<button onclick="nextNumber()">Next ➡</button>
+</div>
+
+<!-- Colors -->
+<div class="card">
+<h2>🎨 Learn Colors</h2>
+
+<div id="colorBox" class="color-box"></div>
+
+<h3 id="colorName">Red</h3>
+
+<button onclick="prevColor()">⬅ Previous</button>
+<!-- <button onclick="speak(colorName.innerText)">🔊 Speak</button> -->
+<button onclick="nextColor()">Next ➡</button>
+</div>
+
+<!-- Animals -->
+<div class="card">
+<h2>🐾 Animal Sounds</h2>
+
+<button onclick="speak('Dog says Woof Woof')">🐶 Dog</button>
+<button onclick="speak('Cat says Meow')">🐱 Cat</button>
+<button onclick="speak('Cow says Moo')">🐮 Cow</button>
+<button onclick="speak('Lion says Roar')">🦁 Lion</button>
+<button onclick="speak('Duck says Quack Quack')">🦆 Duck</button>
+</div>
+
+<!-- Quiz -->
+<div class="card">
+    <h2>🧠 Quiz Time</h2>
+
+    <h3 id="questionCount"></h3>
+
+    <div id="question" style="font-size:28px;margin:20px;">
+    </div>
+
+    <div id="options"></div>
+
+    <div id="result" class="result"></div>
+
+    <button onclick="nextQuestion()">➡ Next Question</button>
+
+    <h3>🏆 Score: <span id="score">0</span></h3>
+</div>
+
+<script>
+
+// Text To Speech
+function speak(text){
+
+    speechSynthesis.cancel();
+
+    const msg = new SpeechSynthesisUtterance(text);
+
+    msg.lang = "en-US";
+    msg.rate = 0.9;
+    msg.pitch = 1.1;
+    msg.volume = 1;
+
+    speechSynthesis.speak(msg);
+}
+
+// Alphabet Section
+
+const alphabetWords = {
+A:"Apple 🍎",
+B:"Ball ⚽",
+C:"Cat 🐱",
+D:"Dog 🐶",
+E:"Elephant 🐘",
+F:"Fish 🐟",
+G:"Goat 🐐",
+H:"Hat 👒",
+I:"Ice Cream 🍦",
+J:"Jug 🏺",
+K:"Kite 🪁",
+L:"Lion 🦁",
+M:"Monkey 🐵",
+N:"Nest 🪺",
+O:"Orange 🍊",
+P:"Parrot 🦜",
+Q:"Queen 👑",
+R:"Rabbit 🐰",
+S:"Sun ☀️",
+T:"Tiger 🐯",
+U:"Umbrella ☂️",
+V:"Van 🚐",
+W:"Watch ⌚",
+X:"Xylophone 🎵",
+Y:"Yak 🦬",
+Z:"Zebra 🦓"
+};
+
+const letters = Object.keys(alphabetWords);
+
+let letterIndex = 0;
+
+function updateLetter(){
+
+    let letter = letters[letterIndex];
+
+    document.getElementById("alphabet").innerText = letter;
+    document.getElementById("alphabetWord").innerText =
+    alphabetWords[letter];
+}
+
+function speakCurrentLetter(){
+
+    let letter = letters[letterIndex];
+
+    speak(letter + " for " +
+          alphabetWords[letter].split(" ")[0]);
+}
+
+function nextLetter(){
+
+    letterIndex =
+    (letterIndex + 1) % letters.length;
+
+    updateLetter();
+
+    speakCurrentLetter();
+}
+
+function prevLetter(){
+
+    letterIndex =
+    (letterIndex - 1 + letters.length)
+    % letters.length;
+
+    updateLetter();
+
+    speakCurrentLetter();
+}
+
+// Numbers
+
+let number = 1;
+
+function nextNumber(){
+
+    if(number < 100){
+
+        number++;
+
+        document.getElementById("number")
+                .innerText = number;
+
+        speak(number.toString());
+    }
+}
+
+function prevNumber(){
+
+    if(number > 1){
+
+        number--;
+
+        document.getElementById("number")
+                .innerText = number;
+
+        speak(number.toString());
+    }
+}
+
+// Colors
+
+const colors = [
+["Red","#ff0000"],
+["Blue","#2196f3"],
+["Green","#4CAF50"],
+["Yellow","#ffeb3b"],
+["Orange","#ff9800"],
+["Purple","#9c27b0"]
+];
+
+let colorIndex = 0;
+
+function updateColor(){
+
+    document.getElementById("colorBox").style.background =
+    colors[colorIndex][1];
+
+    document.getElementById("colorName").innerText =
+    colors[colorIndex][0];
+}
+
+function nextColor(){
+
+    colorIndex =
+    (colorIndex+1)%colors.length;
+
+    updateColor();
+
+    speak(colors[colorIndex][0]);
+}
+
+function prevColor(){
+
+    colorIndex =
+    (colorIndex-1+colors.length)%colors.length;
+
+    updateColor();
+
+    speak(colors[colorIndex][0]);
+}
+
+updateColor();
+
+// Quiz
+
+const quizQuestions = [
+
+{
+    question:"What comes after A?",
+    options:["B","D","Z"],
+    answer:"B"
+},
+
+{
+    question:"What comes after C?",
+    options:["D","A","X"],
+    answer:"D"
+},
+
+{
+    question:"How many legs does a dog have?",
+    options:["2","4","6"],
+    answer:"4"
+},
+
+{
+    question:"What color is the sky?",
+    options:["Blue","Green","Pink"],
+    answer:"Blue"
+},
+
+{
+    question:"Which animal says Meow?",
+    options:["Dog","Cat","Cow"],
+    answer:"Cat"
+},
+
+{
+    question:"What comes after number 5?",
+    options:["6","8","2"],
+    answer:"6"
+},
+
+{
+    question:"Which fruit is yellow?",
+    options:["Banana","Apple","Grapes"],
+    answer:"Banana"
+},
+
+{
+    question:"Which animal is called King of Jungle?",
+    options:["Tiger","Lion","Cat"],
+    answer:"Lion"
+}
+];
+
+let currentQuestion = 0;
+let score = 0;
+
+function loadQuestion(){
+
+    const q = quizQuestions[currentQuestion];
+
+    document.getElementById("questionCount").innerText =
+    `Question ${currentQuestion+1} of ${quizQuestions.length}`;
+
+    document.getElementById("question").innerText =
+    q.question;
+
+    document.getElementById("result").innerText = "";
+
+    let optionsHtml = "";
+
+    q.options.forEach(option => {
+
+        optionsHtml += `
+        <button onclick="checkAnswer('${option}')">
+            ${option}
+        </button>
+        `;
+    });
+
+    document.getElementById("options").innerHTML =
+    optionsHtml;
+}
+
+function checkAnswer(selected){
+
+    const q = quizQuestions[currentQuestion];
+
+    if(selected === q.answer){
+
+        document.getElementById("result").innerHTML =
+        "✅ Correct!";
+
+        speak("Excellent. Correct answer.");
+
+        score++;
+
+    }else{
+
+        document.getElementById("result").innerHTML =
+        `❌ Wrong. Correct answer is ${q.answer}`;
+
+        speak("Oops. Try next question.");
+    }
+
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+
+    currentQuestion++;
+
+    if(currentQuestion >= quizQuestions.length){
+
+        document.getElementById("question").innerHTML =
+        `🎉 Quiz Completed!<br>Your Score: ${score}/${quizQuestions.length}`;
+
+        document.getElementById("options").innerHTML = "";
+
+        document.getElementById("questionCount").innerHTML = "";
+
+        document.getElementById("result").innerHTML = "";
+
+        speak(`Congratulations. You scored ${score} out of ${quizQuestions.length}`);
+
+        return;
+    }
+
+    loadQuestion();
+}
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
